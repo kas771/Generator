@@ -366,7 +366,7 @@ private:
 ///
 /// genie::utils::gsl::dXSec_dElep_AR
 /// A 1-D cross section function: dxsec/dElep
-/// Used for Alvarez-Ruso coherent.
+/// Used for Alvarez-Ruso coherent pion production.
 ///
 class dXSec_dElep_AR: public ROOT::Math::IBaseFunctionOneDim
 {
@@ -396,6 +396,31 @@ private:
   double fGSLRelTol;
   unsigned int fGSLMaxCalls;
 };
+
+
+///.....................................................................................
+///
+/// genie::utils::gsl::d4Xsec_dEldEgammadOmega
+/// A 4-D cross section function (fixed E_nu)
+/// For the Alvarez-Russo NC gamma coherent cross-section
+///
+class d4Xsec_dEldEgammadOmega: public ROOT::Math::IBaseFunctionMultiDim
+{
+public:
+  d4Xsec_dEldEgammadOmega(const XSecAlgorithmI * m, const Interaction * i);
+ ~d4Xsec_dEldEgammadOmega();
+
+  // ROOT::Math::IBaseFunctionMultiDim interface
+  unsigned int                        NDim   (void)               const;
+  double                              DoEval (const double * xin) const;
+  ROOT::Math::IBaseFunctionMultiDim * Clone  (void)               const;
+
+private:
+  const XSecAlgorithmI * fModel;
+  const Interaction *    fInteraction;
+  double fFactor;
+};
+
                   
 ///.....................................................................................
 /// 

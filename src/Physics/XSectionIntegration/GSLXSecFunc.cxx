@@ -913,6 +913,93 @@ genie::utils::gsl::dXSec_dElep_AR *
     new genie::utils::gsl::dXSec_dElep_AR(fModel,fInteraction, fGSLIntegratorType, fGSLRelTol, fGSLMaxCalls);
 }
 //____________________________________________________________________________
+//____________________________________________________________________________
+//
+// 4D integrator for Alvarez-Ruso Coherent gamma
+genie::utils::gsl::d4Xsec_dEldEgammadOmega::d4Xsec_dEldEgammadOmega(
+     const XSecAlgorithmI * m, const Interaction * i) :
+ROOT::Math::IBaseFunctionMultiDim(),
+fModel(m),
+fInteraction(i)
+{
+  
+}
+genie::utils::gsl::d4Xsec_dEldEgammadOmega::~d4Xsec_dEldEgammadOmega()
+{
+
+}
+unsigned int genie::utils::gsl::d4Xsec_dEldEgammadOmega::NDim(void) const
+{
+  return 4;
+}
+double genie::utils::gsl::d4Xsec_dEldEgammadOmega::DoEval(const double * xin) const
+{
+// inputs:  
+//    El [GeV]
+//    Egamma [GeV]
+//    theta l [rad]
+//    phi l [rad]
+// outputs: 
+//   differential cross section [10^-38 cm^2]
+//
+  Kinematics * kinematics = fInteraction->KinePtr();
+  const TLorentzVector * P4_nu = fInteraction->InitStatePtr()->GetProbeP4(kRfLab);
+  double E_nu       = P4_nu->E();
+  
+  double E_l       = xin[0];
+  double E_gamma   = xin[1];
+  double theta_l   = xin[2];
+  double phi_l     = xin[3];
+  
+  double sin_theta_l  = TMath::Sin(theta_l);
+  
+  double y = 1.-E_l/E_nu;
+  
+  double m_l = fInteraction->FSPrimLepton()->Mass();
+  if (E_l < m_l) {
+    return 0.;
+  }
+  
+  double p_l = TMath::Sqrt(E_l*E_l - m_l*m_l);
+  TVector3 lepton_3vector = TVector3(0,0,0);
+  lepton_3vector.SetMagThetaPhi(p_l,theta_l,phi_l);
+  TLorentzVector P4_lep    = TLorentzVector(lepton_3vector , E_l );
+  
+  double Q2 = -(*P4_nu-P4_lep).Mag2();
+  
+  double x = Q2/(2*E_gamma);
+  
+  Range1D_t xlim = fInteraction->PhaseSpace().XLim();
+  
+  if ( x <  xlim.min || x > xlim.max ) {
+    return 0.;
+  }
+  
+  kinematics->Setx(x);
+  kinematics->Sety(y);
+  kinematics::UpdateWQ2FromXY(fInteraction);
+  
+  // Is this right? Check it
+  TVector3 gamma_3vector = TVector3(0,0,0);
+  gamma_3vector.SetMagThetaPhi(E_gamma,-theta_l,-phi_l);
+  TLorentzVector P4_gamma    = TLorentzVector(gamma_3vector , E_gamma );
+  
+  kinematics->SetFSLeptonP4(P4_lep );
+  kinematics->SetHadSystP4 (P4_gamma); // use Hadronic System variable to store gamma momentum
+  
+  delete P4_nu;
+  
+  double xsec = sin_theta_l * fModel->XSec(fInteraction,kPSElEgammaOlfE);
+  return fFactor * xsec/(1E-38 * units::cm2);
+}
+ROOT::Math::IBaseFunctionMultiDim * 
+   genie::utils::gsl::d4Xsec_dEldEgammadOmega::Clone() const
+{
+  return 
+    new genie::utils::gsl::d4Xsec_dEldEgammadOmega(fModel,fInteraction);
+}
+
+//____________________________________________________________________________
 genie::utils::gsl::dXSec_Log_Wrapper::dXSec_Log_Wrapper(
       const ROOT::Math::IBaseFunctionMultiDim * fn,
       bool * ifLog, double * mins, double * maxes) :
