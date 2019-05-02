@@ -1,6 +1,6 @@
 //____________________________________________________________________________
 /*
- Copyright (c) 2003-2019, The GENIE Collaboration
+ Copyright (c) 2003-2018, The GENIE Collaboration
  For the full text of the license visit http://copyright.genie-mc.org
  or see $GENIE/LICENSE
 
@@ -685,6 +685,9 @@ unsigned int genie::utils::gsl::d4Xsec_dEldThetaldOmegapi::NDim(void) const
 }
 double genie::utils::gsl::d4Xsec_dEldThetaldOmegapi::DoEval(const double * xin) const
 {
+	
+// 	  std::cout<<" genie::utils::gsl::d4Xsec_dEldThetaldOmegapi::DoEval "<<std::endl;
+
 // inputs:  
 //    El [GeV]
 //    theta l [rad]
@@ -710,19 +713,21 @@ double genie::utils::gsl::d4Xsec_dEldThetaldOmegapi::DoEval(const double * xin) 
     
   double y = E_pi/E_nu;
   
-  double m_l = fInteraction->FSPrimLepton()->Mass();
-  if (E_l < m_l) {
-    return 0.;
-  }
+  double m_l = 0.0;//fInteraction->FSPrimLepton()->Mass();
+//   if (E_l < m_l) {
+//     return 0.;
+//   }
   
-  double m_pi;
-  if ( fInteraction->ProcInfo().IsWeakCC() ) {
-    m_pi = constants::kPionMass;
-  }
-  else {
-    m_pi = constants::kPi0Mass;
-  }
+  double m_pi = 0.0;
+//   if ( fInteraction->ProcInfo().IsWeakCC() ) {
+//     m_pi = constants::kPionMass;
+//   }
+//   else {
+//     m_pi = constants::kPi0Mass;
+//   }
   
+//     std::cout<<" --------111- "<<std::endl;
+
   double p_l = TMath::Sqrt(E_l*E_l - m_l*m_l);
   TVector3 lepton_3vector = TVector3(0,0,0);
   lepton_3vector.SetMagThetaPhi(p_l,theta_l,phi_l);
@@ -737,22 +742,41 @@ double genie::utils::gsl::d4Xsec_dEldThetaldOmegapi::DoEval(const double * xin) 
   
   double x = Q2/(2*E_pi*constants::kNucleonMass);
   
+//     std::cout<<" --------111-111- "<<std::endl;
+  
   Range1D_t xlim = fInteraction->PhaseSpace().XLim();
+  
+//     std::cout<<" --------111-111-111 "<<std::endl;
+// 	std::cout<<"P4_nu = " <<P4_nu->Mag2()<<"    P4_lep = "<<P4_lep.Mag2() <<std::endl;
+// 	std::cout<<"theta_l = " <<theta_l<<"    theta_pi = "<<theta_pi <<std::endl;
+// 	std::cout<<"Q2 = " <<Q2<<"    E_pi = "<<E_pi <<std::endl;
+// 	  std::cout<<"x = " <<x<<" xlim -> "<<xlim.min<<"   "<<xlim.max <<std::endl;
   
   if ( x <  xlim.min || x > xlim.max ) {
     return 0.;
   }
   
+//   std::cout<<" --------222- "<<std::endl;
+  
   kinematics->Setx(x);
   kinematics->Sety(y);
   kinematics::UpdateWQ2FromXY(fInteraction);
   
+//   std::cout<<" --------333- "<<std::endl;
+  
   kinematics->SetFSLeptonP4(P4_lep );
   kinematics->SetHadSystP4 (P4_pion); // use Hadronic System variable to store pion momentum
   
+//   std::cout<<" --------444- "<<std::endl;
+  
   delete P4_nu;
   
+//   std::cout<<" --------- "<<std::endl;
+  
   double xsec = sin_theta_l * sin_theta_pi * fModel->XSec(fInteraction,kPSElOlTpifE);
+  
+//   std::cout<<" XSec = "<<xsec<<std::endl;
+  
   return fFactor * xsec/(1E-38 * units::cm2);
 }
 ROOT::Math::IBaseFunctionMultiDim * 

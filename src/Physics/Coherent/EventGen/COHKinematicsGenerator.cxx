@@ -1,6 +1,6 @@
 //____________________________________________________________________________
 /*
- Copyright (c) 2003-2019, The GENIE Collaboration
+ Copyright (c) 2003-2018, The GENIE Collaboration
  For the full text of the license visit http://copyright.genie-mc.org
  or see $GENIE/LICENSE
 
@@ -78,29 +78,48 @@ COHKinematicsGenerator::~COHKinematicsGenerator()
 //___________________________________________________________________________
 void COHKinematicsGenerator::ProcessEventRecord(GHepRecord * evrec) const
 {
+	
+// 	std::cout<<" rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"<<std::endl;
+	
   if(fGenerateUniformly) {
+// 	  std::cout<<" 2222222222222222222222222222222222222222"<<std::endl;
     LOG("COHKinematics", pNOTICE)
       << "Generating kinematics uniformly over the allowed phase space";
   }
+//   std::cout<<" 2333333333333333333333333333333333333"<<std::endl;
 
   //-- Access cross section algorithm for running thread
   RunningThreadInfo * rtinfo = RunningThreadInfo::Instance();
   const EventGeneratorI * evg = rtinfo->RunningThread();
   fXSecModel = evg->CrossSectionAlg();
+    std::cout<<"   "<<fXSecModel->Id().Name()<<"    "<<std::endl;
+
   if (fXSecModel->Id().Name() == "genie::ReinSehgalCOHPiPXSec") {
+// 	  	std::cout<<"  ssssssssssssssssssssssssssss "<<std::endl;
+
     CalculateKin_ReinSehgal(evrec);
   } else if (fXSecModel->Id().Name() == "genie::BergerSehgalCOHPiPXSec2015") {
     CalculateKin_BergerSehgal(evrec);
+// 	std::cout<<"  ttttttttttttttttttttt "<<std::endl;
   } else if (fXSecModel->Id().Name() == "genie::BergerSehgalFMCOHPiPXSec2015") {
     CalculateKin_BergerSehgalFM(evrec);
+// 	std::cout<<"  yyyyyyyyyyyyyyyyyyyyyyy "<<std::endl;
   } else if ((fXSecModel->Id().Name() == "genie::AlvarezRusoCOHPiPXSec")) {
+	  
+// 	  std::cout<<"  1ffffffffffffffffffffffffffffffff "<<std::endl;
+	  
     CalculateKin_AlvarezRuso(evrec);
+	
+// 	std::cout<<"  2ffffffffffffffffffffffffffffffff "<<std::endl;
   }
   else {
+// 	  std::cout<<"  lllllllllllllllllllllll "<<std::endl;
     LOG("COHKinematicsGenerator",pFATAL) <<
       "ProcessEventRecord >> Cannot calculate kinematics for " <<
       fXSecModel->Id().Name();
   }
+  
+//   std::cout<<"  endendenednendendnednednendendnednednendendend "<<std::endl;
 }
 //___________________________________________________________________________
 void COHKinematicsGenerator::CalculateKin_BergerSehgal(GHepRecord * evrec) const
@@ -461,6 +480,8 @@ void COHKinematicsGenerator::CalculateKin_ReinSehgal(GHepRecord * evrec) const
 //___________________________________________________________________________
 void COHKinematicsGenerator::CalculateKin_AlvarezRuso(GHepRecord * evrec) const
 {
+	
+// 	std::cout<<"  333ffffffffffffffffffffffffffffff "<<std::endl;
 
   LOG("COHKinematics", pNOTICE) << "Using AlvarezRuso Model";
   // Get the Primary Interacton object
@@ -477,8 +498,15 @@ void COHKinematicsGenerator::CalculateKin_AlvarezRuso(GHepRecord * evrec) const
   //   value is found.
   //   If the kinematics are generated uniformly over the allowed phase
   //   space the max xsec is irrelevant
+  
+//   std::cout<<"  Before xsec_max "<<std::endl;
+//   std::cout<<fGenerateUniformly<<std::endl;
+  
   double xsec_max = (fGenerateUniformly) ? -1 : this->MaxXSec(evrec);
 
+//         	std::cout<<"  After xsec_max "<<std::endl;
+
+  
   //Set up limits of integration variables
   // Primary lepton energy
   const double E_l_min = interaction->FSPrimLepton()->Mass();
@@ -498,11 +526,16 @@ void COHKinematicsGenerator::CalculateKin_AlvarezRuso(GHepRecord * evrec) const
   const double d_ctheta_pi = ctheta_pi_max - ctheta_pi_min;
   const double d_phi = phi_max - phi_min;
 
+//   	std::cout<<"  ARARARARARAARARRARAARARARARARRA "<<std::endl;
+
+  
   //------ Try to select a valid set of kinematics
   unsigned int iter = 0;
   bool accept=false;
   double xsec=-1, g_E_l=-1, g_theta_l=-1, g_phi_l=-1, g_theta_pi=-1, g_phi_pi=-1;
   double g_ctheta_l, g_ctheta_pi;
+  
+//   std::cout<<std::endl<<std::endl<<std::endl<<"CCCCCCCCCCCCCCCCCCCCCCCC2"<<std::endl<<std::endl<<std::endl;
 
   while(1) {
     iter++;
@@ -623,13 +656,13 @@ void COHKinematicsGenerator::SetKinematics(const double E_l,
   const TLorentzVector P4_nu = *(interaction->InitStatePtr()->GetProbeP4(kRfLab));
   double E_nu       = P4_nu.E();
   double E_pi= E_nu-E_l;
-  double m_l = interaction->FSPrimLepton()->Mass();
-  double m_pi;
-  if ( interaction->ProcInfo().IsWeakCC() ) {
-    m_pi = constants::kPionMass;
-  } else {
-    m_pi = constants::kPi0Mass;
-  }
+  double m_l = 0.0;//interaction->FSPrimLepton()->Mass();
+  double m_pi = 0.0;
+//   if ( interaction->ProcInfo().IsWeakCC() ) {
+//     m_pi = constants::kPionMass;
+//   } else {
+//     m_pi = constants::kPi0Mass;
+//   }
   double p_l=0.0;
   if (E_l > m_l) {
     p_l = TMath::Sqrt(E_l*E_l - m_l*m_l);
@@ -704,6 +737,7 @@ double COHKinematicsGenerator::ComputeMaxXSec(const Interaction * in) const
   } else if ((fXSecModel->Id().Name() == "genie::BergerSehgalFMCOHPiPXSec2015")) {
     max_xsec = MaxXSec_BergerSehgalFM(in);
   } else if ((fXSecModel->Id().Name() == "genie::AlvarezRusoCOHPiPXSec")) {
+// 	  std::cout<<"line 740 " <<std::endl;
     max_xsec = MaxXSec_AlvarezRuso(in);
   }
   else {
@@ -893,8 +927,8 @@ double COHKinematicsGenerator::MaxXSec_AlvarezRuso(const Interaction * in) const
   min->SetMaxFunctionCalls(10000);
   min->SetTolerance(0.05);
 
-  const double min_el = in->FSPrimLepton()->Mass();
-  const double max_el = Ev - kPionMass;
+  const double min_el = 0.0;//in->FSPrimLepton()->Mass();
+  const double max_el = Ev ;//- kPionMass;
   const unsigned int n_el = 100;
   const double d_el = (max_el - min_el) / double(n_el - 1);
 
@@ -915,13 +949,24 @@ double COHKinematicsGenerator::MaxXSec_AlvarezRuso(const Interaction * in) const
   const unsigned int n_phipi = 10;
   const double d_phipi = (max_phipi - min_phipi) / double(n_phipi - 1);
 
-  min->SetLimitedVariable ( 0 ,"E_lep"    , max_el     -kASmallNum , d_el      , min_el     , max_el      );
-  min->SetLimitedVariable ( 1 ,"theta_l"  , min_thetal +kASmallNum , d_thetal  , min_thetal , max_thetal  );
-  min->SetLimitedVariable ( 2 ,"theta_pi" , min_thetapi+kASmallNum , d_thetapi , min_thetapi, max_thetapi );
-  min->SetLimitedVariable ( 3 ,"phi_pi"   , min_phipi  +kASmallNum , d_phipi   , min_phipi  , max_phipi   );
+//   min->SetLimitedVariable ( 0 ,"E_lep"    , max_el     -kASmallNum , d_el      , min_el     , max_el      );
+//   min->SetLimitedVariable ( 1 ,"theta_l"  , min_thetal +kASmallNum , d_thetal  , min_thetal , max_thetal  );
+//   min->SetLimitedVariable ( 2 ,"theta_pi" , min_thetapi+kASmallNum , d_thetapi , min_thetapi, max_thetapi );
+//   min->SetLimitedVariable ( 3 ,"phi_pi"   , min_phipi  +kASmallNum , d_phipi   , min_phipi  , max_phipi   );
 
+    min->SetLimitedVariable ( 0 ,"E_lep"    , Ev/2.0 , d_el      , min_el     , max_el      );
+  min->SetLimitedVariable ( 1 ,"theta_l"  , (max_thetal+min_thetal)/2.0 +kASmallNum , d_thetal  , min_thetal , max_thetal  );
+  min->SetLimitedVariable ( 2 ,"theta_pi" , (min_thetapi+max_thetapi)/2.0+kASmallNum , d_thetapi , min_thetapi, max_thetapi );
+  min->SetLimitedVariable ( 3 ,"phi_pi"   , (min_phipi+max_phipi )/2.0 +kASmallNum , d_phipi   , min_phipi  , max_phipi   );
+  
+  
+//   std::cout<<"Minimize: line 957"<<std::endl;
+  
   min->Minimize();
   max_xsec = -min->MinValue(); //back to positive xsec
+  
+//     std::cout<<"After MiFcoutnimize: line 962"<<std::endl;
+
 
   // Apply safety factor, since value retrieved from the cache might
   // correspond to a slightly different energy.
@@ -934,6 +979,9 @@ double COHKinematicsGenerator::MaxXSec_AlvarezRuso(const Interaction * in) const
 #endif
 
   delete min;
+
+//    std::cout<<"  max_xsec = "<<max_xsec<<std::endl;
+//       std::cout<<"return from Minimize: line 962"<<std::endl;
 
   return max_xsec;
 }

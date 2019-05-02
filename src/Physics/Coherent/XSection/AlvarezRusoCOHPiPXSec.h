@@ -14,7 +14,7 @@
 
 \created  October 5, 2012
 
-\cpright  Copyright (c) 2003-2019, The GENIE Collaboration
+\cpright  Copyright (c) 2003-2018, The GENIE Collaboration
           For the full text of the license visit http://copyright.genie-mc.org
           or see $GENIE/LICENSE
 */
@@ -25,6 +25,8 @@
 
 #include "Framework/EventGen/XSecAlgorithmI.h"
 #include "Physics/Coherent/XSection/AlvarezRusoCOHPiPDXSec.h"
+#include "Physics/Coherent/XSection/Edu_Diff_Cross_Section.h"
+
 
 namespace genie {
 
@@ -57,6 +59,9 @@ private:
   
   mutable alvarezruso::AlvarezRusoCOHPiPDXSec * fMultidiff;
   mutable const Interaction * fLastInteraction;
+  
+  mutable Edu::Diff_Cross_Section *diffCS;
+  
   //Parameters
   //bool fUseLookupTable;
   //double fa4;

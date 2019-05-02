@@ -1,6 +1,6 @@
 //____________________________________________________________________________
 /*
- Copyright (c) 2003-2019, The GENIE Collaboration
+ Copyright (c) 2003-2018, The GENIE Collaboration
  For the full text of the license visit http://copyright.genie-mc.org
  or see $GENIE/LICENSE
 
@@ -41,6 +41,8 @@ using namespace genie::constants;
 using namespace genie::utils;
 
 using namespace alvarezruso;
+using namespace Edu;
+
 
 //____________________________________________________________________________
 AlvarezRusoCOHPiPXSec::AlvarezRusoCOHPiPXSec() :
@@ -123,13 +125,54 @@ double AlvarezRusoCOHPiPXSec::XSec(
     fLastInteraction = interaction;
   }
 
-  double xsec = fMultidiff->DXSec(E_nu, E_lep, p4_lep.Theta(), p4_lep.Phi(), p4_pi.Theta(), p4_pi.Phi());
-  xsec = xsec * 1E-38 * units::cm2;
+  	std::string nucleus = "12C";
+	
+	std::string mode;
+    if ( init_state.ProbePdg() > 0) {
+      mode = "nu";
+    } else {
+      mode = "nubar";
+    }
+  diffCS = new Diff_Cross_Section(mode, nucleus);
+  
+//       double k0 =        0.15;//1.0; //GeV
+//     double kg0 =       0.0;//0.3; //GeV
+//     double phig =      0.0;//20.0 * Edu_Param::pi/180;
+//     double thetag =    0.0;//10.0 * Edu_Param::pi/180;
+//     double th =        0.0;//0.0;// 10.0 * Edu_Param::pi/180;
+//     double Enu_final = 0.00525802;//k0 - kg0;
+// 
+//     for (int i = 0; i < 10; ++i) {
+//         for (int j = 0; j < 10; ++j) {
+//             double diff_cs =  diffCS->getDiffCrossSection(k0,Enu_final,th,thetag,phig);;
+// 
+//             std::cout<<"k0 = "<<k0<<" ,  kg0 = "<<kg0<<" ,  theta = "<<th
+//                      <<" , theta_g  = "<<thetag<<" , phi_g = "<<phig
+//                      <<" ,  ds5 = "<<diff_cs<<std::endl;
+//             thetag += 1.5/9;
+//         }
+//         th += 0.5/9;
+//     }
+  
+  
+  std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi();
+		  
+  double xsec = diffCS->getDiffCrossSection(E_nu, E_lep, p4_lep.Theta(),  p4_pi.Theta(), p4_pi.Phi());
+  
+  std::cout<<"  "<<xsec<<"  "<<std::endl;  
+  
+  
+  
+//   double xsec = fMultidiff->DXSec(E_nu, E_lep, p4_lep.Theta(), p4_lep.Phi(), p4_pi.Theta(), p4_pi.Phi());
+//   xsec = xsec * 1E-38 * units::cm2;
   
   if (kps != kPSElOlOpifE) {
     xsec *= utils::kinematics::Jacobian(interaction, kPSElOlOpifE, kps );
   }
   
+//   	  std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi()<<"  "<<xsec<<"  "<<std::endl;
+
+  delete diffCS;
   return (xsec);
 }
 //____________________________________________________________________________
