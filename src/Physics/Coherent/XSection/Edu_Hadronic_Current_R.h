@@ -29,7 +29,7 @@ namespace Edu {
         double V0;
         double rho0;
         double coupling_DeltaNpi;
-        std::complex<double> c_i = {0, 1};
+        std::complex<double> c_i;
         double hc3;
 
         double gamma_vac;
@@ -52,7 +52,7 @@ namespace Edu {
 
         virtual std::complex<double> Delta_propagator_crs();
 
-        void change_other_parameters(std::vector<std::complex<double>>);
+        void change_other_parameters(std::vector<std::complex<double> >);
 
         std::complex<double> Sigma();
 
@@ -128,15 +128,15 @@ namespace Edu {
     public:
         explicit Hadronic_Current_R_Sum(std::vector<Hadronic_Current_R *> vectorOfCurrents);
 
-        void setQ(const std::vector<double> &q) override;
+        void setQ(const std::vector<double> &q) /* override */;
 
-        void setKg(const std::vector<double> &kg) override;
+        void setKg(const std::vector<double> &kg) /* override */;
 
-        void setP(std::vector<double>) override;
+        void setP(std::vector<double>) /* override */;
 
-        std::complex<double> getR(int, int) override;
+        std::complex<double> getR(int, int) /* override */;
 
-        void setFF(double) override;
+        void setFF(double) /* override */;
 
     };
 
@@ -187,9 +187,9 @@ namespace Edu {
         Nuclear_FF *nuclearFF;
 
 
-        void set_tr_dir(Array4x4 &) override;
+        void set_tr_dir(Array4x4 &) /* override */;
 
-        void set_tr_crs(Array4x4 &) override;
+        void set_tr_crs(Array4x4 &) /* override */;
 
     public:
 
@@ -197,17 +197,17 @@ namespace Edu {
 
         virtual ~Hadronic_Current_R_Delta();
 
-        void setFF(double) override;
+        void setFF(double) /* override */;
 
-        void setKg(const std::vector<double> &kg_in) override;
+        void setKg(const std::vector<double> &kg_in) /* override */;
 
         std::complex<double> Propagator_Delta(std::vector<double>);
 
         double qcm(double);
 
-        std::complex<double> getR(int, int) override;
+        std::complex<double> getR(int, int) /* override */;
 
-        void setP(std::vector<double>) override;
+        void setP(std::vector<double>) /* override */;
 
     };
 
