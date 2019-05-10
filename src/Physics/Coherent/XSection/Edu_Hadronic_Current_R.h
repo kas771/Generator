@@ -126,17 +126,17 @@ namespace Edu {
         std::vector<Hadronic_Current_R *> vector_of_currents;
 
     public:
-        explicit Hadronic_Current_R_Sum(std::vector<Hadronic_Current_R *> vectorOfCurrents);
+        explicit Hadronic_Current_R_Sum(const std::vector<Hadronic_Current_R *> &vectorOfCurrents);
 
-        void setQ(const std::vector<double> &q) /* override */;
+        virtual void setQ(const std::vector<double> &q);
 
-        void setKg(const std::vector<double> &kg) /* override */;
+        virtual void setKg(const std::vector<double> &kg);
 
-        void setP(std::vector<double>) /* override */;
+        virtual void setP(std::vector<double>);
 
-        std::complex<double> getR(int, int) /* override */;
+        virtual std::complex<double> getR(int, int);
 
-        void setFF(double) /* override */;
+        virtual void setFF(double);
 
     };
 
@@ -187,9 +187,9 @@ namespace Edu {
         Nuclear_FF *nuclearFF;
 
 
-        void set_tr_dir(Array4x4 &) /* override */;
+        virtual void set_tr_dir(Array4x4 &);
 
-        void set_tr_crs(Array4x4 &) /* override */;
+        virtual void set_tr_crs(Array4x4 &);
 
     public:
 
@@ -197,17 +197,17 @@ namespace Edu {
 
         virtual ~Hadronic_Current_R_Delta();
 
-        void setFF(double) /* override */;
+        virtual void setFF(double);
 
-        void setKg(const std::vector<double> &kg_in) /* override */;
+        virtual void setKg(const std::vector<double> &kg_in);
 
         std::complex<double> Propagator_Delta(std::vector<double>);
 
         double qcm(double);
 
-        std::complex<double> getR(int, int) /* override */;
+        virtual std::complex<double> getR(int, int);
 
-        void setP(std::vector<double>) /* override */;
+        virtual void setP(std::vector<double>);
 
     };
 

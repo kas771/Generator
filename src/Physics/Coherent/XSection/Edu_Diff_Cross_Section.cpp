@@ -12,11 +12,11 @@
 
 using namespace Edu;
 
-Diff_Cross_Section::Diff_Cross_Section(std::string m, const std::string &n) : mode(std::move(m)),
-                                                                                              nucleus(n) {
-    this->c_i = {0,1};
+Diff_Cross_Section::Diff_Cross_Section(const std::string &mode, const std::string &nucleus) : mode(mode),
+                                                                                              nucleus(nucleus) {
+    this->c_i = Edu_Param::c_i;
     double e2 = 4.0 * Edu_Param::pi * Edu_Param::alpha;
-    this->constant_factors = Edu_Param::Gf2 * e2 / (2.0 * 8.0 * pow(2.0*Edu_Param::pi,4) ) ;//* Edu_Param::hccm2;
+    this->constant_factors = Edu_Param::Gf2 * e2 / (2.0 * 8.0 * pow(2.0*Edu_Param::pi,4) ) * Edu_Param::hccm2;
 
     this->nuclearFF = new Nucleus_FF_DeVries(nucleus);
     this->vector_of_currents.push_back(new Hadronic_Current_R_Delta(nuclearFF));
@@ -33,18 +33,14 @@ Diff_Cross_Section::~Diff_Cross_Section() {
 }
 
 double Diff_Cross_Section::getDiffCrossSection(double Enu, double Enu_final, double theta_l, double theta_g, double phi_g) {
-	
-// 	std::cout<<Enu<<"  "<< Enu_final<<"  "<< theta_l<<"  "<<theta_g<<"  "<< phi_g<<std::endl;
-	
     double Eg = Enu - Enu_final;
 
-    std::vector<double> param = {Enu, Eg, phi_g, theta_g};
+    double params_aux[]= {Enu, Eg, phi_g, theta_g};
+    std::vector<double> param (params_aux, params_aux + sizeof(params_aux) / sizeof(double) );
 
     this->change_other_parameters(param);
 
     double cs =this->integrand(theta_l);
-	
-// 		std::cout<<"  ppppppp    cs= "<<cs<<std::endl;
 
     if(std::isnan(cs)) return 0.0;
     else return cs;
@@ -54,19 +50,23 @@ double Diff_Cross_Section::getDiffCrossSection(double Enu, double Enu_final, dou
 
 double Diff_Cross_Section::integrand(double th) {
 
-    this->kp = {kp0, kp0 * sin(th), 0., kp0 * cos(th)};
+    double kp_aux[] = {kp0, kp0 * sin(th), 0., kp0 * cos(th)};
+    this->kp.assign(kp_aux, kp_aux + sizeof(kp_aux) / sizeof(double) );
 
     this->q = this->k;
     std::transform(q.begin( ), q.end( ), kp.begin( ), q.begin( ),std::minus<double>( ));
 
     this->current_R->setQ(this->q);
 
-    this->kg = {this->k0g, this->k0g * sin(this->thg) * cos(this->phig),
-                this->k0g * sin(this->thg) * sin(this->phig), this->k0g * cos(this->thg)};
+    double kg_aux[] = {this->k0g, this->k0g * sin(this->thg) * cos(this->phig),
+                       this->k0g * sin(this->thg) * sin(this->phig), this->k0g * cos(this->thg)};
+    this->kg.assign(kg_aux, kg_aux + sizeof(kg_aux) / sizeof(double) );
 
-    std::vector<double> p = this->kg;
-    std::transform(p.begin( ), p.end( ), this->q.begin( ), p.begin( ),std::minus<double>( ));
-    std::transform(p.begin( ), p.end( ), p.begin( ),[](double i) { return i/2.0; });
+    std::vector<double> p(this->kg.size());
+    for (int j = 0; j < this->kg.size(); ++j) {
+        p[j] = (this->kg[j] - this->q[j])/2.0;
+    }
+
     double pv2 = p[1]*p[1] + p[2]*p[2] + p[3]*p[3];
     p[0] = sqrt(Edu_Param::mp2 + pv2);
 
@@ -89,14 +89,15 @@ void Diff_Cross_Section::change_other_parameters(std::vector<double> k0_k0g_phig
     //q0 = k0g approx
     this->kp0 = k0 - this->k0g;
 
-    this->k = {k0, 0., 0., k0};
+    double k_aux[] = {k0, 0., 0., k0};
+    this->k.assign(k_aux, k_aux + sizeof(k_aux) / sizeof(double) );
 
     this->factors = this->k0g * (this->k0-this->k0g) /this->k0;
 
 }
 
 double Diff_Cross_Section::LH_contraction_neutrino() {
-    auto lh = -8*k[0]*((2*k[0] - this->q[0] - this->q[3])*H(0,0,0,0) + this->q[1]*H(0,0,0,1) - this->c_i*this->q[1]*H(0,0,0,2) +
+    std::complex<double> lh = -8*k[0]*((2*k[0] - this->q[0] - this->q[3])*H(0,0,0,0) + this->q[1]*H(0,0,0,1) - this->c_i*this->q[1]*H(0,0,0,2) +
                        (-2*k[0] + this->q[0] + this->q[3])*H(0,0,0,3) + this->q[1]*H(0,1,0,0) + (-this->q[0] + this->q[3])*H(0,1,0,1) +
                        this->c_i*(this->q[0] - this->q[3])*H(0,1,0,2) - this->q[1]*H(0,1,0,3) + this->c_i*this->q[1]*H(0,2,0,0) -
                        this->c_i*(this->q[0] - this->q[3])*H(0,2,0,1) + (-this->q[0] + this->q[3])*H(0,2,0,2) - this->c_i*this->q[1]*H(0,2,0,3) +
@@ -122,7 +123,7 @@ double Diff_Cross_Section::LH_contraction_neutrino() {
 }
 
 double Diff_Cross_Section::LH_contraction_antineutrino() {
-    auto lh = -8*this->k[0]*((2*this->k[0] - this->q[0] - this->q[3])*H(0,0,0,0) + this->q[1]*H(0,0,0,1) + this->c_i*this->q[1]*H(0,0,0,2) +
+    std::complex<double> lh = -8*this->k[0]*((2*this->k[0] - this->q[0] - this->q[3])*H(0,0,0,0) + this->q[1]*H(0,0,0,1) + this->c_i*this->q[1]*H(0,0,0,2) +
                              (-2*this->k[0] + this->q[0] + this->q[3])*H(0,0,0,3) + this->q[1]*H(0,1,0,0) + (-this->q[0] + this->q[3])*H(0,1,0,1) -
                              this->c_i*(this->q[0] - this->q[3])*H(0,1,0,2) - this->q[1]*H(0,1,0,3) - this->c_i*this->q[1]*H(0,2,0,0) +
                              this->c_i*(this->q[0] - this->q[3])*H(0,2,0,1) + (-this->q[0] + this->q[3])*H(0,2,0,2) + this->c_i*this->q[1]*H(0,2,0,3) +
@@ -162,6 +163,8 @@ void Diff_Cross_Section::setMode(const std::string &mode_input) {
 void Diff_Cross_Section::setNucleus(const std::string &nucleus_input) {
     Diff_Cross_Section::nucleus = nucleus_input;
 }
+
+
 
 
 

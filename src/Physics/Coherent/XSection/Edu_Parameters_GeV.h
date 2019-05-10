@@ -1,11 +1,12 @@
 #ifndef _PARAMETERS_H_
 #define _PARAMETERS_H_
 #include <cmath>
+#include <complex>
 
 namespace Edu_Param
 {
 
-
+    const std::complex<double> c_i(0.0,1.0);
     const double pi= 4.0*atan(1.0);
     const double alpha= 1.0/137.0;
     const double hc=0.19733; // (GeV x fm)

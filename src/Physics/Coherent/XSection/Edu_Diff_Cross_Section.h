@@ -36,7 +36,7 @@ namespace Edu {
 
 
     public:
-        Diff_Cross_Section(std::string m, const std::string &n);
+        Diff_Cross_Section(const std::string &mode, const std::string &nucleus);
 
         virtual ~Diff_Cross_Section();
 

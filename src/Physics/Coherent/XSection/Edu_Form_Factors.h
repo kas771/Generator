@@ -38,9 +38,9 @@ namespace Edu {
         double hc;
 
     public:
-        explicit Nucleus_FF_DeVries(std::string nucleus);
+        explicit Nucleus_FF_DeVries(const std::string &nucleus);
 
-        void setFF(double) /* override */;
+        virtual void setFF(double);
 
         void set_12C();
 

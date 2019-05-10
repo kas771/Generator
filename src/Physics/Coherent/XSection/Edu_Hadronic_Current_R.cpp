@@ -17,7 +17,7 @@ Delta_in_medium::Delta_in_medium() {
     this->mpi = Edu_Param::mpi;
     this->V0 = Edu_Param::Delta_V0;
     this->coupling_DeltaNpi = Edu_Param::coupling_DeltaNpi;
-    this->c_i = {0,1};
+    this->c_i = Edu_Param::c_i;
     this->hc3 = Edu_Param::hc * Edu_Param::hc * Edu_Param::hc;
     this->dir_or_crs = "dir";
     this->rho0 = Edu_Param::rho0;
@@ -45,7 +45,7 @@ std::complex<double> Delta_in_medium::Delta_propagator_crs() {
     return 1.0/(this->p2 - this->mDelta2 + this->c_i * this->mDelta * this->Gamma_vacuum(this->p2));
 }
 
-void Delta_in_medium::change_other_parameters(std::vector<std::complex<double>> param) {
+void Delta_in_medium::change_other_parameters(std::vector<std::complex<double> > param) {
     this->p2 = param[0].real();
     this->q_minus_kg = param[1].real();
     this->p = sqrt(this->p2);
@@ -124,7 +124,7 @@ std::complex<double> Delta_in_medium::Delta_propagator_avg_dir() {
 
 
 Hadronic_Current_R::Hadronic_Current_R() {
-    this->c_i = {0,1};
+    this->c_i = Edu_Param::c_i;
 }
 
 void Hadronic_Current_R::set_tr_dir(Array4x4 &tr) {}
@@ -144,7 +144,8 @@ void Hadronic_Current_R::setKg(const std::vector<double> &kg_in) {
 void Hadronic_Current_R::setP(std::vector<double> p_in) {
     Hadronic_Current_R::p = p_in;
     this->p0 = p_in[0];
-    this->pp = {p_in[0], -p_in[1], -p_in[2], -p_in[3]};
+    double pp_aux[] = {p_in[0], -p_in[1], -p_in[2], -p_in[3]};
+    this->pp.assign(pp_aux, pp_aux + sizeof(pp_aux) / sizeof(double) );
 }
 
 std::complex<double> Hadronic_Current_R::getR(int i, int j) {
@@ -162,10 +163,8 @@ Hadronic_Current_R::~Hadronic_Current_R() {}
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-Hadronic_Current_R_Sum::Hadronic_Current_R_Sum(std::vector<Hadronic_Current_R *> vectorOfCurrents)
-        : vector_of_currents(std::move(vectorOfCurrents)) {}
-
+Hadronic_Current_R_Sum::Hadronic_Current_R_Sum(const std::vector<Hadronic_Current_R *> &vectorOfCurrents)
+        : vector_of_currents(vectorOfCurrents) {}
 
 void Hadronic_Current_R_Sum::setQ(const std::vector<double> &q_in) {
     for (int i = 0; i < this->vector_of_currents.size(); ++i) {
@@ -202,6 +201,7 @@ void Hadronic_Current_R_Sum::setFF(double p_in) {
 
 
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +214,7 @@ Hadronic_Current_R_Delta::Hadronic_Current_R_Delta(Nuclear_FF *nuclearFf) : nucl
     this->mDelta2 = Edu_Param::mDelta*Edu_Param::mDelta;
     this->mpi = Edu_Param::mpi;
     this->mpi2 = Edu_Param::mpi2;
-    this->c_i = {0,1};
+    this->c_i = Edu_Param::c_i;
     this->ff_Delta = new Form_Factors_Delta();
 
     this->ff_Delta->setFF(0.0);
@@ -817,7 +817,9 @@ std::complex<double> Hadronic_Current_R_Delta::getR(int i, int j) {
 void Hadronic_Current_R_Delta::setP(std::vector<double> p_in) {
     this->p = p_in;
     this->p0 = p_in[0];
-    this->pp = {p_in[0], -p_in[1], -p_in[2], -p_in[3]};
+
+    double aux_pp[] = {p_in[0], -p_in[1], -p_in[2], -p_in[3]};
+    this->pp.assign(aux_pp, aux_pp + sizeof(aux_pp) / sizeof(double) );
 
     this->p_dir = this->p;
     std::transform(this->p_dir.begin( ), this->p_dir.end( ), this->q.begin( ), this->p_dir.begin( ),std::plus<double>( ));
@@ -829,7 +831,7 @@ void Hadronic_Current_R_Delta::setP(std::vector<double> p_in) {
 std::complex<double> Hadronic_Current_R_Delta::Propagator_Delta(std::vector<double> p_in) {
     double p2 = p_in[0] * p_in[0] - p_in[1] * p_in[1] - p_in[2] * p_in[2] - p_in[3] * p_in[3];
 
-    std::vector<std::complex<double>> param(2);
+    std::vector<std::complex<double> > param(2);
     param[0] = p2;
     param[1] = this->q_minus_kg;
     this->propagator->change_other_parameters(param);

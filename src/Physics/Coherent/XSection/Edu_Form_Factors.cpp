@@ -1,5 +1,3 @@
-#include <utility>
-
 //
 // Created by edusaul on 8/04/19.
 //
@@ -23,8 +21,7 @@ const std::complex<double> &Nuclear_FF::getFfN() const {
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-
-Nucleus_FF_DeVries::Nucleus_FF_DeVries(std::string n) : nucleus(std::move(n)) {
+Nucleus_FF_DeVries::Nucleus_FF_DeVries(const std::string &nucleus) : nucleus(nucleus) {
     this->pi= Edu_Param::pi;
     this->hc=Edu_Param::hc;
 
@@ -100,7 +97,7 @@ void Nucleus_FF_DeVries::set_40Ar() {
     this->R=9.0/hc; // [fm]/hc
 }
 
-Nucleus_FF_DeVries::~Nucleus_FF_DeVries() = default;
+Nucleus_FF_DeVries::~Nucleus_FF_DeVries() {}
 
 
 
@@ -152,12 +149,7 @@ void Form_Factors_Delta::setFF(double Q2) {
 
     double Fd=pow((1.0 + Q2/(this->N_Delta_MA*this->N_Delta_MA)),-2);
     this->C5aNC=1.2*Fd;
-//    this->C5aNC=1.0*Fd;
-
     this->C3vNC = this->C3v * this->aNC;
-
-//    std::cout<<r <<"   "<< Q2<<"  "<< this->mn<<"  "<<this->mDelta<<std::endl;
-//    std::cout<<this->C3vNC <<"   "<< this->C3v<<"  "<< this->aNC<<std::endl<<std::endl;
 
 }
 
