@@ -167,33 +167,33 @@ Hadronic_Current_R_Sum::Hadronic_Current_R_Sum(const std::vector<Hadronic_Curren
         : vector_of_currents(vectorOfCurrents) {}
 
 void Hadronic_Current_R_Sum::setQ(const std::vector<double> &q_in) {
-    for (int i = 0; i < this->vector_of_currents.size(); ++i) {
+    for (int i = 0; i < static_cast<unsigned int>(this->vector_of_currents.size()); ++i) {
         vector_of_currents[i]->setQ(q_in);
     }
 }
 
 void Hadronic_Current_R_Sum::setKg(const std::vector<double> &kg_in) {
-    for (int i = 0; i < this->vector_of_currents.size(); ++i) {
+    for (int i = 0; i < static_cast<unsigned int>(this->vector_of_currents.size()); ++i) {
         vector_of_currents[i]->setKg(kg_in);
     }
 }
 
 void Hadronic_Current_R_Sum::setP(std::vector<double> p_in) {
-    for (int i = 0; i < this->vector_of_currents.size(); ++i) {
+    for (int i = 0; i < static_cast<unsigned int>(this->vector_of_currents.size()); ++i) {
         vector_of_currents[i]->setP(p_in);
     }
 }
 
 std::complex<double> Hadronic_Current_R_Sum::getR(int i, int j) {
     std::complex<double> R  (0.0,0.0);
-    for (int k = 0; k < this->vector_of_currents.size(); ++k) {
+    for (int k = 0; k < static_cast<unsigned int>(this->vector_of_currents.size()); ++k) {
         R += vector_of_currents[k]->getR(i,j);
     }
     return R;
 }
 
 void Hadronic_Current_R_Sum::setFF(double p_in) {
-    for (int i = 0; i < this->vector_of_currents.size(); ++i) {
+    for (int i = 0; i < static_cast<unsigned int>(this->vector_of_currents.size()); ++i) {
         vector_of_currents[i]->setFF(p_in);
     }
 }

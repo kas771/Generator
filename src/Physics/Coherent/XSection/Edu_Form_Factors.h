@@ -38,7 +38,7 @@ namespace Edu {
         double hc;
 
     public:
-        explicit Nucleus_FF_DeVries(const std::string &nucleus);
+        explicit Nucleus_FF_DeVries(const std::string &n);
 
         virtual void setFF(double);
 

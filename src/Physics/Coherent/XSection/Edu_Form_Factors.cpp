@@ -21,7 +21,7 @@ const std::complex<double> &Nuclear_FF::getFfN() const {
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-Nucleus_FF_DeVries::Nucleus_FF_DeVries(const std::string &nucleus) : nucleus(nucleus) {
+Nucleus_FF_DeVries::Nucleus_FF_DeVries(const std::string &n) : nucleus(n) {
     this->pi= Edu_Param::pi;
     this->hc=Edu_Param::hc;
 

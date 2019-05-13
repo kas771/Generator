@@ -12,8 +12,8 @@
 
 using namespace Edu;
 
-Diff_Cross_Section::Diff_Cross_Section(const std::string &mode, const std::string &nucleus) : mode(mode),
-                                                                                              nucleus(nucleus) {
+Diff_Cross_Section::Diff_Cross_Section(const std::string &m, const std::string &n) : mode(m),
+                                                                                              nucleus(n) {
     this->c_i = Edu_Param::c_i;
     double e2 = 4.0 * Edu_Param::pi * Edu_Param::alpha;
     this->constant_factors = Edu_Param::Gf2 * e2 / (2.0 * 8.0 * pow(2.0*Edu_Param::pi,4) ) * Edu_Param::hccm2;
@@ -26,7 +26,7 @@ Diff_Cross_Section::Diff_Cross_Section(const std::string &mode, const std::strin
 
 Diff_Cross_Section::~Diff_Cross_Section() {
     delete this->nuclearFF;
-    for (int i = 0; i < this->vector_of_currents.size(); ++i) {
+    for (int i = 0; i <  static_cast<unsigned int>(this->vector_of_currents.size()); ++i) {
         delete this->vector_of_currents[i];
     }
     delete this->current_R;
@@ -63,7 +63,7 @@ double Diff_Cross_Section::integrand(double th) {
     this->kg.assign(kg_aux, kg_aux + sizeof(kg_aux) / sizeof(double) );
 
     std::vector<double> p(this->kg.size());
-    for (int j = 0; j < this->kg.size(); ++j) {
+    for (int j = 0; j < static_cast<unsigned int>(this->kg.size()); ++j) {
         p[j] = (this->kg[j] - this->q[j])/2.0;
     }
 
