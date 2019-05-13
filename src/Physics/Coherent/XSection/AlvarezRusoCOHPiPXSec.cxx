@@ -155,11 +155,11 @@ double AlvarezRusoCOHPiPXSec::XSec(
 //     }
   
   
-  std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi();
+//  std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi();
 		  
   double xsec = diffCS->getDiffCrossSection(E_nu, E_lep, p4_lep.Theta(),  p4_pi.Theta(), p4_pi.Phi());
   
-  std::cout<<"  "<<xsec<<"  "<<std::endl;  
+//  std::cout<<"  "<<xsec<<"  "<<std::endl;  
   
   
   
