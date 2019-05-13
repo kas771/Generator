@@ -16,7 +16,7 @@ Diff_Cross_Section::Diff_Cross_Section(const std::string &m, const std::string &
                                                                                               nucleus(n) {
     this->c_i = Edu_Param::c_i;
     double e2 = 4.0 * Edu_Param::pi * Edu_Param::alpha;
-    this->constant_factors = Edu_Param::Gf2 * e2 / (2.0 * 8.0 * pow(2.0*Edu_Param::pi,4) ) * Edu_Param::hccm2;
+    this->constant_factors = Edu_Param::Gf2 * e2 / (2.0 * 8.0 * pow(2.0*Edu_Param::pi,4) );// * Edu_Param::hccm2;
 
     this->nuclearFF = new Nucleus_FF_DeVries(nucleus);
     this->vector_of_currents.push_back(new Hadronic_Current_R_Delta(nuclearFF));
