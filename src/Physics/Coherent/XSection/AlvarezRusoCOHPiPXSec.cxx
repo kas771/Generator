@@ -123,9 +123,27 @@ double AlvarezRusoCOHPiPXSec::XSec(
     fMultidiff = new AlvarezRusoCOHPiPDXSec(Z, A ,current, flavour, nutype);
     fLastInteraction = interaction;
   }
+  
+  std::string nucleus;
+  if(Z == 6 && A == 12) nucleus = "12C";
+  else if(Z == 18 && A == 22) nucleus = "40Ar";
+  else {
+	  std::cout<<"WARNING: Z = "<<Z<<"  ; A = "<<A<<";  wrong nucleus for NCgamma cross section, settgit ing 12C as default..."<<std::endl;
+	  nucleus = "12C";
+  }
+  std::string mode;
+  if ( init_state.ProbePdg() > 0) {
+      mode = "nu";
+  } else {
+      mode = "nubar";
+  }
+  
+  diffCS = new Diff_Cross_Section(mode, nucleus);
+  
+  double xsec = diffCS->getDiffCrossSection(E_nu, E_lep, p4_lep.Theta(),  p4_pi.Theta(), p4_pi.Phi());
 
-  double xsec = fMultidiff->DXSec(E_nu, E_lep, p4_lep.Theta(), p4_lep.Phi(), p4_pi.Theta(), p4_pi.Phi());
-  xsec = xsec * 1E-38 * units::cm2;
+//   double xsec = fMultidiff->DXSec(E_nu, E_lep, p4_lep.Theta(), p4_lep.Phi(), p4_pi.Theta(), p4_pi.Phi());
+//   xsec = xsec * 1E-38 * units::cm2;
   
   if (kps != kPSElOlOpifE) {
     xsec *= utils::kinematics::Jacobian(interaction, kPSElOlOpifE, kps );
