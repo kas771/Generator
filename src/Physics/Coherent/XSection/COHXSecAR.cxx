@@ -70,8 +70,8 @@ double COHXSecAR::Integrate(
   
   // Check this
   double Enu      = init_state.ProbeE(kRfLab);
-  double Elep_min = (1.-y_lim.max) * Enu;
-  double Elep_max = (1.-y_lim.min) * Enu;
+  double Elep_min = kASmallNum;// (1.-y_lim.max) * Enu;
+  double Elep_max = Enu - kASmallNum;//(1.-y_lim.min) * Enu;
   
   LOG("COHXSecAR", pINFO)
        << "Lepton energy integration range = [" << Elep_min << ", " << Elep_max << "]";
