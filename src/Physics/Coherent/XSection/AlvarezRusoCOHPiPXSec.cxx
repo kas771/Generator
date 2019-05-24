@@ -41,6 +41,7 @@ using namespace genie::constants;
 using namespace genie::utils;
 
 using namespace alvarezruso;
+using namespace NC_gamma;
 
 //____________________________________________________________________________
 AlvarezRusoCOHPiPXSec::AlvarezRusoCOHPiPXSec() :
