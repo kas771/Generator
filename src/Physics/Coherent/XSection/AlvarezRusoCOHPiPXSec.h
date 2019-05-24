@@ -25,7 +25,7 @@
 
 #include "Framework/EventGen/XSecAlgorithmI.h"
 #include "Physics/Coherent/XSection/AlvarezRusoCOHPiPDXSec.h"
-#include "Physics/Coherent/XSection/Edu_Diff_Cross_Section.h"
+#include "Physics/Coherent/XSection/NCgamma_Diff_Cross_Section.h"
 
 namespace genie {
 
@@ -58,7 +58,7 @@ private:
   
   mutable alvarezruso::AlvarezRusoCOHPiPDXSec * fMultidiff;
   mutable const Interaction * fLastInteraction;
-  mutable Edu::Diff_Cross_Section *diffCS;
+  mutable NC_gamma::Diff_Cross_Section *diffCS;
 
   //Parameters
   //bool fUseLookupTable;
