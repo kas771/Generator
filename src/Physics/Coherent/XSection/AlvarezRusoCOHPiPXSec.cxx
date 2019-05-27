@@ -140,8 +140,12 @@ double AlvarezRusoCOHPiPXSec::XSec(
   
   diffCS = new Diff_Cross_Section(mode, nucleus);
   
+  
+//    std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi();
   double xsec = diffCS->getDiffCrossSection(E_nu, E_lep, p4_lep.Theta(),  p4_pi.Theta(), p4_pi.Phi());
-
+//  std::cout<<"  "<<xsec<<"  "<<std::endl;  
+  
+  
 //   double xsec = fMultidiff->DXSec(E_nu, E_lep, p4_lep.Theta(), p4_lep.Phi(), p4_pi.Theta(), p4_pi.Phi());
 //   xsec = xsec * 1E-38 * units::cm2;
   
