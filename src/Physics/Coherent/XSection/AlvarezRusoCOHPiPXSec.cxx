@@ -140,6 +140,10 @@ double AlvarezRusoCOHPiPXSec::XSec(
   
   diffCS = new Diff_Cross_Section(mode, nucleus);
   
+//   double p4v= sqrt(p4_pi.Px()*p4_pi.Px() + p4_pi.Py()*p4_pi.Py() + p4_pi.Pz()*p4_pi.Pz());
+//   std::cout<<"  M = "<<p4_pi.M()<<"  M2 = "<<p4_pi.M2()<<"  px = "<<p4_pi.Px()<<"  py = "<<p4_pi.Py()<<"  pz = "<<p4_pi.Pz()<<std::endl;
+//   std::cout<<"  E_g = "<<p4_pi.E()<<"  p4v = "<<p4v<<"  E_g= "<<sqrt(p4v*p4v + 0.135*0.135)<<std::endl<<std::endl;
+  
   // The reference plane is defined with respect the momentum of the incoming neutrino
   // and the outgoing photon, so we do a rotation to the plane defined by the 
   // momentum of the incoming and outgoing neutrinos. This means that the phi_gamma
