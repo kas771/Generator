@@ -140,9 +140,13 @@ double AlvarezRusoCOHPiPXSec::XSec(
   
   diffCS = new Diff_Cross_Section(mode, nucleus);
   
+  // The reference plane is defined with respect the momentum of the incoming neutrino
+  // and the outgoing photon, so we do a rotation to the plane defined by the 
+  // momentum of the incoming and outgoing neutrinos. This means that the phi_gamma
+  // angle is now the outgoing neutrino phi angle.
   
-//    std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi();
-  double xsec = diffCS->getDiffCrossSection(E_nu, E_lep, p4_lep.Theta(),  p4_pi.Theta(), p4_pi.Phi());
+//    std::cout<<" "<<" Enu= "<<E_nu<<"  ; El= "<<E_lep<<" ; th=  "<<p4_lep.Theta()<<" ; thg= "<<p4_pi.Theta()<<"  ; phig= "<<p4_pi.Phi() -> p4_lep.Phi();
+  double xsec = diffCS->getDiffCrossSection(E_nu, E_lep, p4_lep.Theta(),  p4_pi.Theta(), p4_lep.Phi());
 //  std::cout<<"  "<<xsec<<"  "<<std::endl;  
   
 //   if(p4_pi.Phi()!=0){
