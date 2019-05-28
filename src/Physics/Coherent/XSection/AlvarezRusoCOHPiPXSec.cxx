@@ -160,6 +160,8 @@ double AlvarezRusoCOHPiPXSec::XSec(
     xsec *= utils::kinematics::Jacobian(interaction, kPSElOlOpifE, kps );
   }
   
+  delete diffCS;
+  
   return (xsec);
 }
 //____________________________________________________________________________
