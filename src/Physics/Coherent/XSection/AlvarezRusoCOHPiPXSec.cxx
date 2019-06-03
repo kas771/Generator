@@ -126,7 +126,7 @@ double AlvarezRusoCOHPiPXSec::XSec(
   
   std::string nucleus;
   if(Z == 6 && A == 12) nucleus = "12C";
-  else if(Z == 18 && A == 22) nucleus = "40Ar";
+  else if(Z == 18 && A == 40) nucleus = "40Ar";
   else {
 	  std::cout<<"WARNING: Z = "<<Z<<"  ; A = "<<A<<";  wrong nucleus for NCgamma cross section, settgit ing 12C as default..."<<std::endl;
 	  nucleus = "12C";
