@@ -30,7 +30,8 @@ TGT_BASE =  gevgen          \
             gspl2root       \
             gntpc           \
             gpdfcomp        \
-            gsfcomp
+            gsfcomp         \
+            gdebug_xsec
 
 ifeq ($(strip $(GOPT_ENABLE_FNAL)),YES)
 TGT_BASE += gevgen_fnal
@@ -231,6 +232,13 @@ $(GENIE_BIN_PATH)/gpdfcomp: gPDFComp.o $(call find_libs,gpdfcomp)
 $(GENIE_BIN_PATH)/gsfcomp: gSFComp.o $(call find_libs,gsfcomp)
 	@echo "** Building gsfcomp"
 	$(LD) $(LDFLAGS) gSFComp.o $(LIBRARIES) -o $(GENIE_BIN_PATH)/gsfcomp
+
+# App to calculate differential cross section
+#
+$(GENIE_BIN_PATH)/gdebug_xsec: gdebug_xsec.o $(call find_libs,gdebug_xsec)
+	@echo "** Building gdebug_xsec"
+	$(LD) $(LDFLAGS) gdebug_xsec.o $(LIBRARIES) -o $(GENIE_BIN_PATH)/gdebug_xsec
+
 
 # CLEANING-UP
 
