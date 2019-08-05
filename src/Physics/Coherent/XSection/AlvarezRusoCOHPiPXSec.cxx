@@ -66,8 +66,12 @@ AlvarezRusoCOHPiPXSec::~AlvarezRusoCOHPiPXSec()
 double AlvarezRusoCOHPiPXSec::XSec(
                  const Interaction * interaction, KinePhaseSpace_t kps) const
 {
+	
+//   interaction -> Kine().FSLeptonP4().Print() ;  	
+	
   if(! this -> ValidProcess    (interaction) ) return 0.;
-  if(! this -> ValidKinematics (interaction) ) return 0.;
+  //To do checks I had to comment next line because it is complaining because it espects a Pion. This is done for the differential cross section check.
+ if(! this -> ValidKinematics (interaction) ) return 0.;
 
   const Kinematics &   kinematics = interaction -> Kine();
   const InitialState & init_state = interaction -> InitState();
